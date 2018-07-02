@@ -108,11 +108,11 @@ function convertCurrency(){
         const ratesStore = tx.objectStore('exchange_rates');
         return ratesStore.get(moneyPair);
     })
-    .then(rateObj => {
+    .then(rates => {
         // If exchange rate exists in IndexedDB
         if(rateObj) {
-            this.calculateConversion(rateObj.exchange_rate, value);
-            return rateObj;
+            let convertedAmount = ((rates.exchange_rate) * amount);
+            document.getElementById('value').value = convertedAmount;
         } else { 
             // If not fetch from API and store in IndexedDB for subsequent operations
             fetch(exchangeApiURL)
