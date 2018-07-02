@@ -9,7 +9,7 @@ if (navigator.serviceWorker) {
         upgradeDB.createObjectStore('exchange_rates', { keyPath: 'pair' });
     });
     
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('./sw.js')
         .then(registration => {
             // console.log(registration);
             if (registration.waiting) {
