@@ -1,6 +1,6 @@
 console.log('service works change 3')
 let staticCacheName = 'currency-converter-static-v1';
-//add static files to cache api
+//cache the static files to the Cache Api
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(staticCacheName).then(cache => {
@@ -17,7 +17,7 @@ self.addEventListener('install', event => {
     );
 });
 
-// check the cache if files exist and serve them before making a fresh request
+// check the cache if the files exist else fetch from the network
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.open(staticCacheName).then(cache => {

@@ -1,17 +1,15 @@
-//make sure that Service Workers are supported.
-// document.addEventListener("DOMContentLoaded", evt => {
+//service worker registration begins
 
 function registerWorker(){
 
-if (navigator.serviceWorker) {
+if (navigator.serviceWorker) {  // check if service worker is supported
     const dbPromise = idb.open('listOfCurrency', 1, upgradeDB => {
         upgradeDB.createObjectStore('currencies', { keyPath: 'currencyName' });
         upgradeDB.createObjectStore('exchange_rates', { keyPath: 'pair' });
     });
     
     navigator.serviceWorker.register('./sw.js')
-        .then(registration => {
-            // console.log(registration);
+        .then(registration => {  // once registered, check various states.
             if (registration.waiting) {
                 return dbPromise.then(db => {
                     const tx = db.transaction('currencies');
@@ -44,7 +42,6 @@ if (navigator.serviceWorker) {
                 registration.installing.addEventListener('statechange', function () {
                     if (this.state === 'installed') {
                         return dbPromise.then(db => {
-                            // return db.transaction('currencies').objectStore('currencies').getAll();
                             const tx = db.transaction('currencies');
                             const currencyStore = tx.objectStore('currencies');
                             return currencyStore.getAll();
@@ -93,7 +90,6 @@ function convertCurrency(){
         upgradeDB.createObjectStore('currencies', { keyPath: 'currencyName' });
         upgradeDB.createObjectStore('exchange_rates', { keyPath: 'pair' });
     });
-    // alert('converting')
     const currencyFrom =  document.getElementById('currency_from').value ;
     const currencyTo = document.getElementById('currency_to').value ;
     const amount = document.getElementById('amount').value ;
@@ -108,13 +104,11 @@ function convertCurrency(){
         const ratesStore = tx.objectStore('exchange_rates');
         return ratesStore.get(moneyPair);
     })
-    .then(rates => {
-        // If exchange rate exists in IndexedDB
+    .then(rates => { // check if the rate of the current currency pair exists in the IndexedDB
         if(rates) {
             let convertedAmount = ((rates.exchange_rate) * amount);
             document.getElementById('value').value = convertedAmount;
-        } else { 
-            // If not fetch from API and store in IndexedDB for subsequent operations
+        } else { // if the pair doesnt exist, make an api call and save the currency pair in the DB
             fetch(exchangeApiURL)
             .then(response => {
                 return response.json();
