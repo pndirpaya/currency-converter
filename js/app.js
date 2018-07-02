@@ -110,7 +110,7 @@ function convertCurrency(){
     })
     .then(rates => {
         // If exchange rate exists in IndexedDB
-        if(rateObj) {
+        if(rates) {
             let convertedAmount = ((rates.exchange_rate) * amount);
             document.getElementById('value').value = convertedAmount;
         } else { 
